@@ -175,35 +175,44 @@ def getKeyPoints(source_name):
     return res
 
 original = []
-table = np.zeros((413, 16))
+table = np.zeros((415, 20))
 
 j=1
 
 def compare(shot):
-   # print(shot)
-    i=0
     global j
     global original
     global table
-
+   # print(shot)
+   # print(original)
+    i=0
+    table[:,0]=1
     for dot in original:
-        table[i][0]=1
         if dot in shot:
+
             table[i][j]=1
-            i=i+1
         else:
-           table[i][j] = 0
+            table[i][j] = 0
+        i=i+1;
+
+        #table[0][ji]=1
+        #i = i + 1
+       # if dot in shot:
+        #    table[i][j]=1
+         #   i=i+1
+        #else:
+         #  table[i][j] = 0
     j=j+1
    # print(table)
 
 def test():
-    imageFolderPath = 'outsideFinal'
+    imageFolderPath = 'outside'
     imagePath = glob.glob(imageFolderPath + '/*.jpeg')
     global original
     original = getKeyPoints('out.jpeg')
     print(len(original))
-    #for img in imagePath:
-     #  compare(getKeyPoints(img))
+    for img in imagePath:
+       compare(getKeyPoints(img))
 
 def final():
     global table
@@ -215,21 +224,31 @@ def final():
     perc = 0
     true_count=0;
     false_count=0;
-    for hi in range(h):
-        for wi in range(w):
-            sum+=table[hi][wi]
-
-        perc=sum*100/w
-        if(perc>=50):
+    sum = np.sum(table,axis=1)
+  #  print(sum)
+    for el in sum:
+        if el>=50:
             keyp.append(True)
-            true_count+=1;
-        else:
-            if perc > 0 and perc<50:
-                keyp.append(False)
-                false_count+=1;
-        sum=0
+            true_count += 1;
+        if el>0 and el<50:
+            keyp.append(False)
+            false_count += 1;
+    print(true_count);
+    print(false_count);
+    print(true_count*100/(true_count+false_count))
+
+
+      #  perc=sum*100/w
+       # if(perc>=50):
+        #    keyp.append(True)
+         #   true_count+=1;
+        #else:
+         #   if perc > 0 and perc<50:
+          #      keyp.append(False)
+           #     false_count+=1;
+        #sum=0
        # print(perc)
-        print(true_count)
+        #print(true_count)
   #  print(true_count*100/(true_count+false_count)+1)
       #      reswi += table[hi][wi]
        # perc = 100 * reswi / w
