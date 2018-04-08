@@ -177,7 +177,7 @@ def getKeyPoints(source_name):
 original = []
 table = np.zeros((500, 25))
 
-j=0
+j=1
 
 def compare(shot):
     global j
@@ -186,10 +186,11 @@ def compare(shot):
    # print(shot)
    # print(original)
     i=0
-    table[:,0]=1
+    table[:len(original),0]=1
     for dot in original:
         if dot in shot:
-            np.put(table,[i,j],1)
+           # np.put(table,[j,i],1)
+            table[i,j]=1
         i=i+1;
     j=j+1;
 
@@ -206,7 +207,7 @@ def final():
     global table
     keyp = []
     h, w = table.shape
-    #print(table)
+    print(table)
     sum=0
     reswi = 0
     mass= []
@@ -214,20 +215,21 @@ def final():
     true_count=0;
     false_count=0;
    # print(table)
-    for i in range (0,h):
-        for j in range (0,w):
-            sum=sum+table[i,j]
-            mass.append(sum)
+    for j in range (0,h):
+        for i in range (0,w):
+            sum=sum+table[j,i]
+        mass.append(sum)
         sum=0;
-    #print(mass)
+    print(len(mass))
 
-    for per in mass:
-        if per>=w/2:
-            keyp.append(True)
-            true_count=true_count+1;
-        if per>1 and per<w/2:
+    for item in mass:
+        if item >=2:
+            keyp.append(True);
+            true_count=true_count+1
+        if item>0 and item<2:
             keyp.append(False)
             false_count=false_count+1
+
     print(true_count*100/(true_count+false_count))
 
 
