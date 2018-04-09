@@ -4,6 +4,7 @@ import math
 import numpy as np
 import glob
 import cv2
+import  os
 from sklearn.externals import joblib
 
 f1 = [[-1,-1,1,1],[-1,-1,1,1],[-1,-1,1,1],[-1,-1,1,1]]
@@ -175,7 +176,7 @@ def getKeyPoints(source_name):
     return res
 
 original = []
-table = np.zeros((500, 25))
+table = np.zeros((500, 26))
 
 j=1
 
@@ -184,7 +185,7 @@ def compare(shot):
     global original
     global table
    # print(shot)
-   # print(original)
+    #print(original)
     i=0
     table[:len(original),0]=1
     for dot in original:
@@ -196,10 +197,10 @@ def compare(shot):
 
 def test():
     imageFolderPath = 'outsideFinal'
-    imagePath = glob.glob(imageFolderPath + '/*.jpeg')
+    imagePath = glob.glob(imageFolderPath + '/*.jpg')
     global original
-    original = getKeyPoints('outside.jpeg')
-    print(len(original))
+    original = getKeyPoints('frame2.jpg')
+   # print(len(original))
     for img in imagePath:
        compare(getKeyPoints(img))
 
@@ -207,7 +208,7 @@ def final():
     global table
     keyp = []
     h, w = table.shape
-    print(table)
+    #print(table)
     sum=0
     reswi = 0
     mass= []
@@ -220,19 +221,57 @@ def final():
             sum=sum+table[j,i]
         mass.append(sum)
         sum=0;
-    print(len(mass))
+   # print(len(mass))
 
     for item in mass:
-        if item >=2:
+        if item >=12:
             keyp.append(True);
             true_count=true_count+1
-        if item>0 and item<2:
+        if item>0 and item<12:
             keyp.append(False)
             false_count=false_count+1
 
     print(true_count*100/(true_count+false_count))
 
 
+def hm():
+    vidcap = cv2.VideoCapture('outside.mp4')
+    area = (50, 50, 300, 300)
+    success, image = vidcap.read()
+    count = 0
+    dirname = 'test'
+    os.mkdir(dirname)
+    success = True
+    while success:
+        #cv2.imwrite("frame%d.jpg" % count, image)
+        cv2.imwrite(os.path.join(dirname, "frame%d.jpg" % count), image)# save frame as JPEG file
+        success, image = vidcap.read()
+        print('Read a new frame: ', success)
+        count += 1
+    for img in dirname:
+        print("olol")
 
+def lol():
+    img = Image.open("outside.jpeg")
+    area = (50, 50, 300, 300)
+    cropped_img = img.crop(area)
+    cropped_img.show()
+
+def cropp():
+    area = (50, 50, 300, 300)
+    count =0
+    imagePath = glob.glob('test' + '/*.jpg')
+    for img in imagePath:
+      #  print("olol")
+        imag = Image.open(img)
+        imag = imag.crop(area)
+       # img.show()
+        count+=1
+        imag.save('C:\1/frame%d.jpg" % count','JPG')
+
+
+#hm()
+#cropp()
+#lol()
 test()
 final()
